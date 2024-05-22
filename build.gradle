@@ -1,0 +1,71 @@
+
+buildscript {
+    ext.kotlin_version = '1.9.23'
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
+        classpath "org.jmailen.gradle:kotlinter-gradle:4.3.0"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:5.2.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id "project-report"
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id "org.jetbrains.kotlin.jvm" version "${kotlin_version}"
+    id "org.jetbrains.kotlin.kapt" version "${kotlin_version}"
+    id "org.jetbrains.kotlin.plugin.spring" version "${kotlin_version}"
+    id "org.jetbrains.kotlin.plugin.allopen" version "${kotlin_version}"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    apply plugin: "idea"
+    apply plugin: "kotlin"
+    apply plugin: "java-library"
+    apply plugin: "project-report"
+    apply plugin: "org.springframework.boot"
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    tasks.register('createStartScripts', CreateStartScripts) {
+        mainClass = 'io.finapi.application.FinApiApplication'
+        applicationName = "${rootProject.name}"
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+        archiveClassifier.set('')   // remove "plain" suffix for jar files
+    }
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

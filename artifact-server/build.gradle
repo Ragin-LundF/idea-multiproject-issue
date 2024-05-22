@@ -1,0 +1,4 @@
+dependencies {
+    api project (":artifact1")
+    api project (":artifact2")
+}
